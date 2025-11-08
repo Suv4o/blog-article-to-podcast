@@ -5,9 +5,18 @@ import { Agent, run, extractAllTextOutput } from "@openai/agents";
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 /**
- * Script structure returned by agents
+ * Script structure returned by agents (one speaker)
  */
-interface PodcastScript {
+interface PodcastScriptSingle {
+    intro: string;
+    content: string;
+    outro: string;
+}
+
+/**
+ * Script structure returned by agents (two speakers)
+ */
+interface PodcastScriptDual {
     intro: string;
     dialogue: Array<{
         speaker: "Alex" | "Sam";
@@ -16,12 +25,40 @@ interface PodcastScript {
     outro: string;
 }
 
+type PodcastScript = PodcastScriptSingle | PodcastScriptDual;
+
 /**
- * 1️⃣ Scriptwriter Agent
+ * 1️⃣ Scriptwriter Agent - Single Speaker
+ * Turns a Markdown article into a single-speaker podcast script
+ */
+const scriptwriterSingle = new Agent({
+    name: "ScriptwriterSingle",
+    instructions: `
+    You are a professional tech podcast writer.
+    Convert a markdown blog article into an engaging single-speaker podcast script.
+    The speaker is Alex, hosting a solo tech podcast.
+    Keep it friendly, educational, and conversational.
+    DO NOT read code out loud — instead, explain what it does conversationally.
+    Include an intro and outro.
+    Use markers like [pause], [excited], or [laughs] where it feels natural.
+    
+    Format the output as JSON with this structure:
+
+    {
+      "intro": "string",
+      "content": "string",
+      "outro": "string"
+    }
+  `,
+    model: "gpt-4o",
+});
+
+/**
+ * 1️⃣ Scriptwriter Agent - Dual Speakers
  * Turns a Markdown article into a 2-speaker conversation
  */
-const scriptwriter = new Agent({
-    name: "Scriptwriter",
+const scriptwriterDual = new Agent({
+    name: "ScriptwriterDual",
     instructions: `
     You are a witty and smart tech podcast writer.
     Convert a markdown blog article into a natural conversation between two hosts: Alex and Sam.
@@ -48,8 +85,20 @@ const scriptwriter = new Agent({
  * 2️⃣ Editor Agent
  * Polishes phrasing, adds humor & rhythm, ensures balance
  */
-const editor = new Agent({
-    name: "Editor",
+const editorSingle = new Agent({
+    name: "EditorSingle",
+    instructions: `
+    You are a professional podcast editor.
+    Take the raw single-speaker script and make it sound natural and entertaining.
+    Ensure the flow is conversational and engaging.
+    Add light humor or reactions where fitting.
+    Return only valid JSON with the same structure as you received.
+  `,
+    model: "gpt-4o",
+});
+
+const editorDual = new Agent({
+    name: "EditorDual",
     instructions: `
     You are a professional podcast editor.
     Take the raw script and make it sound natural and entertaining.
@@ -78,26 +127,46 @@ async function generateVoiceLine(speaker: "Alex" | "Sam", text: string): Promise
 /**
  * MAIN PIPELINE
  */
-async function generatePodcastFromMarkdown(markdown: string, outputFileName = "podcast_episode.mp3") {
+async function generatePodcastFromMarkdown(
+    markdown: string,
+    outputFileName = "podcast_episode.mp3",
+    speakers: 1 | 2 = 1
+) {
+    console.log(`🎬 Generating ${speakers}-speaker podcast...`);
     console.log("🎬 Step 1: Generating initial podcast script...");
 
-    // Step 1: Scriptwriter creates the initial draft
-    const draftResult = await run(
-        scriptwriter,
-        `Convert this markdown tech article into an engaging podcast conversation:\n\n${markdown}`
-    );
+    let scriptText: string;
 
-    // Extract text from the result
-    const draftText = extractAllTextOutput(draftResult.newItems);
-    console.log("✅ Draft script created.");
+    if (speakers === 1) {
+        // Single speaker mode
+        const draftResult = await run(
+            scriptwriterSingle,
+            `Convert this markdown tech article into an engaging single-speaker podcast:\n\n${markdown}`
+        );
 
-    console.log("🎬 Step 2: Editing and polishing script...");
+        const draftText = extractAllTextOutput(draftResult.newItems);
+        console.log("✅ Draft script created.");
 
-    // Step 2: Editor polishes the draft
-    const finalResult = await run(editor, `Please edit and polish this podcast script:\n\n${draftText}`);
+        console.log("🎬 Step 2: Editing and polishing script...");
+        const finalResult = await run(editorSingle, `Please edit and polish this podcast script:\n\n${draftText}`);
 
-    // Extract final text
-    let scriptText = extractAllTextOutput(finalResult.newItems);
+        scriptText = extractAllTextOutput(finalResult.newItems);
+    } else {
+        // Dual speaker mode
+        const draftResult = await run(
+            scriptwriterDual,
+            `Convert this markdown tech article into an engaging podcast conversation:\n\n${markdown}`
+        );
+
+        const draftText = extractAllTextOutput(draftResult.newItems);
+        console.log("✅ Draft script created.");
+
+        console.log("🎬 Step 2: Editing and polishing script...");
+        const finalResult = await run(editorDual, `Please edit and polish this podcast script:\n\n${draftText}`);
+
+        scriptText = extractAllTextOutput(finalResult.newItems);
+    }
+
     console.log("✅ Script finalized.");
 
     // Try to extract JSON if it's wrapped in markdown code blocks
@@ -112,32 +181,46 @@ async function generatePodcastFromMarkdown(markdown: string, outputFileName = "p
     fs.writeFileSync("podcast_script.json", JSON.stringify(script, null, 2));
     console.log("📝 Script saved to podcast_script.json");
 
-    // Step 3: Generate TTS for intro, dialogue, and outro
+    // Step 3: Generate TTS
     console.log("🎙️ Step 3: Generating audio...");
 
     const chunks: Buffer[] = [];
 
-    // Intro (Alex)
-    console.log("  → Generating intro...");
-    chunks.push(await generateVoiceLine("Alex", script.intro));
+    if (speakers === 1) {
+        // Single speaker mode
+        const singleScript = script as PodcastScriptSingle;
 
-    // Dialogue
-    console.log(`  → Generating ${script.dialogue.length} dialogue segments...`);
-    for (const [index, line] of script.dialogue.entries()) {
-        console.log(`    [${index + 1}/${script.dialogue.length}] ${line.speaker}`);
-        chunks.push(await generateVoiceLine(line.speaker, line.text));
+        console.log("  → Generating intro...");
+        chunks.push(await generateVoiceLine("Alex", singleScript.intro));
+
+        console.log("  → Generating main content...");
+        chunks.push(await generateVoiceLine("Alex", singleScript.content));
+
+        console.log("  → Generating outro...");
+        chunks.push(await generateVoiceLine("Alex", singleScript.outro));
+    } else {
+        // Dual speaker mode
+        const dualScript = script as PodcastScriptDual;
+
+        console.log("  → Generating intro...");
+        chunks.push(await generateVoiceLine("Alex", dualScript.intro));
+
+        console.log(`  → Generating ${dualScript.dialogue.length} dialogue segments...`);
+        for (const [index, line] of dualScript.dialogue.entries()) {
+            console.log(`    [${index + 1}/${dualScript.dialogue.length}] ${line.speaker}`);
+            chunks.push(await generateVoiceLine(line.speaker, line.text));
+        }
+
+        console.log("  → Generating outro...");
+        chunks.push(await generateVoiceLine("Sam", dualScript.outro));
     }
-
-    // Outro (Sam)
-    console.log("  → Generating outro...");
-    chunks.push(await generateVoiceLine("Sam", script.outro));
 
     // Merge buffers
     const combined = Buffer.concat(chunks);
     fs.writeFileSync(outputFileName, combined);
 
     console.log(`🎧 Podcast saved as ${outputFileName}`);
-    console.log(`\n✨ Done! Your podcast is ready to play.`);
+    console.log(`\n✨ Done! Your ${speakers}-speaker podcast is ready to play.`);
 }
 
 /**
@@ -157,7 +240,22 @@ async function main() {
         const markdown = fs.readFileSync(markdownFile, "utf-8");
         const outputFile = args[1] || "podcast_episode.mp3";
 
-        await generatePodcastFromMarkdown(markdown, outputFile);
+        // Check for --speakers flag
+        let speakers: 1 | 2 = 1; // Default to single speaker
+        const speakersFlag = args.find((arg) => arg.startsWith("--speakers="));
+        if (speakersFlag) {
+            const speakersValue = speakersFlag.split("=")[1];
+            if (speakersValue === "2") {
+                speakers = 2;
+            } else if (speakersValue === "1") {
+                speakers = 1;
+            } else {
+                console.error(`❌ Invalid --speakers value. Use --speakers=1 or --speakers=2`);
+                process.exit(1);
+            }
+        }
+
+        await generatePodcastFromMarkdown(markdown, outputFile, speakers);
     } else {
         // Use example markdown
         const markdown = `
@@ -197,7 +295,7 @@ No manual reinstalling required! Just run this command, and Homebrew will instal
 That's it! Never manually reinstall your dev tools again.
 `;
 
-        await generatePodcastFromMarkdown(markdown);
+        await generatePodcastFromMarkdown(markdown); // Default to 1 speaker
     }
 }
 

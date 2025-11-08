@@ -1,11 +1,13 @@
 # Blog Article to Podcast Generator
 
-Transform your technical blog articles (written in Markdown) into engaging, conversational podcasts with two speakers using AI agents and text-to-speech!
+Transform your technical blog articles (written in Markdown) into engaging podcasts using AI agents and text-to-speech!
 
 ## 🎯 Features
 
--   **Multi-Agent System**: Uses two AI agents (Scriptwriter and Editor) to create natural conversations
--   **Two-Speaker Format**: Alex and Sam discuss your article in a fun, educational way
+-   **Multi-Agent System**: Uses AI agents (Scriptwriter and Editor) to create natural scripts
+-   **Flexible Speaker Modes**:
+    -   **Single Speaker** (default): Solo podcast with one host (Alex)
+    -   **Two Speakers**: Conversational format with Alex and Sam
 -   **Code Explanation**: Code snippets are explained conversationally, not read aloud
 -   **Emotional Expression**: Includes markers like `[laughs]`, `[excited]`, etc.
 -   **Complete Podcast**: Includes intro and outro segments
@@ -15,9 +17,9 @@ Transform your technical blog articles (written in Markdown) into engaging, conv
 
 ### The Pipeline
 
-1. **Scriptwriter Agent** → Converts your markdown article into a conversational script between Alex and Sam
+1. **Scriptwriter Agent** → Converts your markdown article into a podcast script (single or dual speaker)
 2. **Editor Agent** → Polishes the script for natural flow, pacing, and humor
-3. **TTS Generation** → Creates audio for each speaker using OpenAI's text-to-speech API
+3. **TTS Generation** → Creates audio using OpenAI's text-to-speech API
 4. **Output** → A complete podcast episode in MP3 format!
 
 ## 📦 Installation
@@ -42,7 +44,7 @@ OPENAI_API_KEY=your_api_key_here
 
 ## 🎬 Usage
 
-### Run with the example article:
+### Run with the example article (default: single speaker):
 
 ```bash
 npm start
@@ -50,20 +52,31 @@ npm start
 
 This will use the included `example-article.md` and create:
 
--   `podcast_script.json` - The generated conversational script
+-   `podcast_script.json` - The generated script
 -   `podcast_episode.mp3` - The final podcast audio
 
-### Run with your own article:
+### Run with your own article (single speaker):
 
 ```bash
 npm start path/to/your/article.md
 ```
 
+### Two-speaker mode (conversational):
+
+```bash
+npm start path/to/your/article.md --speakers=2
+```
+
 ### Specify custom output filename:
 
 ```bash
-npm start path/to/your/article.md my-podcast.mp3
+npm start path/to/your/article.md my-podcast.mp3 --speakers=2
 ```
+
+### Speaker Mode Options
+
+-   `--speakers=1` (default): Single speaker podcast with Alex
+-   `--speakers=2`: Two-speaker conversational podcast with Alex and Sam
 
 ## 📝 Input Format
 
@@ -92,13 +105,19 @@ More explanations...
 
 ### Script (`podcast_script.json`)
 
-A JSON file containing:
+The structure depends on the speaker mode:
 
--   `intro`: Opening segment
--   `dialogue`: Array of speaker turns with text
--   `outro`: Closing segment
+**Single Speaker (default):**
 
-Example:
+```json
+{
+    "intro": "Welcome to Tech Talks...",
+    "content": "Today we're diving into...",
+    "outro": "Thanks for listening..."
+}
+```
+
+**Two Speakers:**
 
 ```json
 {
@@ -115,8 +134,8 @@ Example:
 
 A complete podcast episode with:
 
--   Alex voiced by OpenAI's "alloy" voice
--   Sam voiced by OpenAI's "nova" voice
+-   **Single Speaker**: Alex voiced by OpenAI's "alloy" voice
+-   **Two Speakers**: Alex (alloy) and Sam (nova) voices
 
 ## 🛠️ Technology Stack
 
