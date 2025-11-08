@@ -16,13 +16,15 @@
 
 ## Run Examples
 
+**Important:** You must provide a markdown file as input.
+
 ### 1. Run with the included example (default: single speaker):
 
 ```bash
-npm start
+npm start example-article.md
 ```
 
-This uses `example-article.md` and creates:
+This creates:
 
 -   `podcast_script.json` - The podcast script
 -   `podcast_episode.mp3` - The final podcast (single speaker: Alex)
@@ -30,7 +32,7 @@ This uses `example-article.md` and creates:
 ### 2. Run with two speakers (conversational):
 
 ```bash
-npm start --speakers=2
+npm start example-article.md --speakers=2
 ```
 
 ### 3. Run with your own blog post (single speaker):

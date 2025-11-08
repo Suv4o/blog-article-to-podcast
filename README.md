@@ -44,13 +44,15 @@ OPENAI_API_KEY=your_api_key_here
 
 ## 🎬 Usage
 
-### Run with the example article (default: single speaker):
+**Note:** You must provide a markdown file as input.
+
+### Basic usage (single speaker - default):
 
 ```bash
-npm start
+npm start example-article.md
 ```
 
-This will use the included `example-article.md` and create:
+This creates:
 
 -   `podcast_script.json` - The generated script
 -   `podcast_episode.mp3` - The final podcast audio

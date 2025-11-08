@@ -230,73 +230,45 @@ async function main() {
     // Check if markdown file is provided as argument
     const args = process.argv.slice(2);
 
-    if (args.length > 0) {
-        const markdownFile = args[0];
-        if (!fs.existsSync(markdownFile)) {
-            console.error(`❌ File not found: ${markdownFile}`);
+    if (args.length === 0) {
+        console.error(`❌ Please provide a markdown file as an argument.
+
+Usage:
+  npm start <markdown-file> [output-file] [--speakers=1|2]
+
+Examples:
+  npm start my-blog-post.md
+  npm start my-article.md episode-01.mp3
+  npm start my-article.md podcast.mp3 --speakers=2
+`);
+        process.exit(1);
+    }
+
+    const markdownFile = args[0];
+    if (!fs.existsSync(markdownFile)) {
+        console.error(`❌ File not found: ${markdownFile}`);
+        process.exit(1);
+    }
+
+    const markdown = fs.readFileSync(markdownFile, "utf-8");
+    const outputFile = args[1] || "podcast_episode.mp3";
+
+    // Check for --speakers flag
+    let speakers: 1 | 2 = 1; // Default to single speaker
+    const speakersFlag = args.find((arg) => arg.startsWith("--speakers="));
+    if (speakersFlag) {
+        const speakersValue = speakersFlag.split("=")[1];
+        if (speakersValue === "2") {
+            speakers = 2;
+        } else if (speakersValue === "1") {
+            speakers = 1;
+        } else {
+            console.error(`❌ Invalid --speakers value. Use --speakers=1 or --speakers=2`);
             process.exit(1);
         }
-
-        const markdown = fs.readFileSync(markdownFile, "utf-8");
-        const outputFile = args[1] || "podcast_episode.mp3";
-
-        // Check for --speakers flag
-        let speakers: 1 | 2 = 1; // Default to single speaker
-        const speakersFlag = args.find((arg) => arg.startsWith("--speakers="));
-        if (speakersFlag) {
-            const speakersValue = speakersFlag.split("=")[1];
-            if (speakersValue === "2") {
-                speakers = 2;
-            } else if (speakersValue === "1") {
-                speakers = 1;
-            } else {
-                console.error(`❌ Invalid --speakers value. Use --speakers=1 or --speakers=2`);
-                process.exit(1);
-            }
-        }
-
-        await generatePodcastFromMarkdown(markdown, outputFile, speakers);
-    } else {
-        // Use example markdown
-        const markdown = `
-# Migrating Your Homebrew Setup to a New Mac with One Command
-
-Setting up a new Mac can be a hassle — especially reinstalling all your tools.
-Luckily, Homebrew makes it easy.
-
-\`\`\`bash
-brew bundle dump --file=~/Brewfile --describe
-\`\`\`
-
-This command exports all your installed packages, casks, and taps into a single file called a Brewfile.
-Think of it as a shopping list for all your development tools.
-
-## How it works
-
-The Brewfile contains:
-- All installed formulae (command-line tools)
-- All casks (GUI applications)
-- All taps (third-party repositories)
-
-You can later restore them on a new Mac with:
-
-\`\`\`bash
-brew bundle install --file=~/Brewfile
-\`\`\`
-
-No manual reinstalling required! Just run this command, and Homebrew will install everything from your Brewfile automatically.
-
-## Pro Tips
-
-- Keep your Brewfile in version control (like Git)
-- Update it regularly when you install new tools
-- Share it with your team for consistent setups
-
-That's it! Never manually reinstall your dev tools again.
-`;
-
-        await generatePodcastFromMarkdown(markdown); // Default to 1 speaker
     }
+
+    await generatePodcastFromMarkdown(markdown, outputFile, speakers);
 }
 
 // Run the main function

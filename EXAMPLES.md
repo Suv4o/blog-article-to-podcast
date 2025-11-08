@@ -1,11 +1,13 @@
 # Usage Examples
 
+**Note:** All commands require a markdown file as input.
+
 ## Basic Usage
 
 ### 1. Single Speaker (Default)
 
 ```bash
-npm start
+npm start example-article.md
 ```
 
 Creates a solo podcast with Alex as the host.
@@ -13,7 +15,7 @@ Creates a solo podcast with Alex as the host.
 ### 2. Two Speakers
 
 ```bash
-npm start --speakers=2
+npm start example-article.md --speakers=2
 ```
 
 Creates a conversational podcast with Alex and Sam.
