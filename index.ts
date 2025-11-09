@@ -19,7 +19,7 @@ interface PodcastScriptSingle {
 interface PodcastScriptDual {
     intro: string;
     dialogue: Array<{
-        speaker: "Alex" | "Sam";
+        speaker: "Aleks" | "Nicole";
         text: string;
     }>;
     outro: string;
@@ -36,7 +36,7 @@ const scriptwriterSingle = new Agent({
     instructions: `
     You are a professional tech podcast writer.
     Convert a markdown blog article into an engaging single-speaker podcast script.
-    The speaker is Alex, hosting a solo tech podcast.
+    The speaker is Aleks, hosting a solo tech podcast.
     Keep it friendly, educational, and conversational.
     DO NOT read code out loud — instead, explain what it does conversationally.
     Include an intro and outro.
@@ -61,7 +61,7 @@ const scriptwriterDual = new Agent({
     name: "ScriptwriterDual",
     instructions: `
     You are a witty and smart tech podcast writer.
-    Convert a markdown blog article into a natural conversation between two hosts: Alex and Sam.
+    Convert a markdown blog article into a natural conversation between two hosts: Aleks and Nicole.
     Keep it friendly, educational, and funny.
     DO NOT read code out loud — instead, explain what it does conversationally.
     Include an intro and outro.
@@ -72,8 +72,8 @@ const scriptwriterDual = new Agent({
     {
       "intro": "string",
       "dialogue": [
-        {"speaker": "Alex", "text": "string"},
-        {"speaker": "Sam", "text": "string"}
+        {"speaker": "Aleks", "text": "string"},
+        {"speaker": "Nicole", "text": "string"}
       ],
       "outro": "string"
     }
@@ -92,7 +92,7 @@ const editorSingle = new Agent({
     Take the raw single-speaker script and make it sound natural and entertaining.
     Ensure the flow is conversational and engaging.
     Add light humor or reactions where fitting.
-    Return only valid JSON with the same structure as you received.
+    Return only valid JSON with the Nicolee structure as you received.
   `,
     model: "gpt-4o",
 });
@@ -105,7 +105,7 @@ const editorDual = new Agent({
     Maintain both speakers' distinct voices.
     Add light humor or reactions where fitting.
     Ensure the conversation flows naturally with good pacing.
-    Return only valid JSON with the same structure as you received.
+    Return only valid JSON with the Nicolee structure as you received.
   `,
     model: "gpt-4o",
 });
@@ -114,8 +114,8 @@ const editorDual = new Agent({
  * 3️⃣ TTS Agent
  * Converts the final script into audio for each speaker
  */
-async function generateVoiceLine(speaker: "Alex" | "Sam", text: string): Promise<Buffer> {
-    const voice = speaker === "Alex" ? "alloy" : "nova"; // Different voices for each speaker
+async function generateVoiceLine(speaker: "Aleks" | "Nicole", text: string): Promise<Buffer> {
+    const voice = speaker === "Aleks" ? "alloy" : "nova"; // Different voices for each speaker
     const response = await client.audio.speech.create({
         model: "tts-1-hd",
         voice,
@@ -191,19 +191,19 @@ async function generatePodcastFromMarkdown(
         const singleScript = script as PodcastScriptSingle;
 
         console.log("  → Generating intro...");
-        chunks.push(await generateVoiceLine("Alex", singleScript.intro));
+        chunks.push(await generateVoiceLine("Aleks", singleScript.intro));
 
         console.log("  → Generating main content...");
-        chunks.push(await generateVoiceLine("Alex", singleScript.content));
+        chunks.push(await generateVoiceLine("Aleks", singleScript.content));
 
         console.log("  → Generating outro...");
-        chunks.push(await generateVoiceLine("Alex", singleScript.outro));
+        chunks.push(await generateVoiceLine("Aleks", singleScript.outro));
     } else {
         // Dual speaker mode
         const dualScript = script as PodcastScriptDual;
 
         console.log("  → Generating intro...");
-        chunks.push(await generateVoiceLine("Alex", dualScript.intro));
+        chunks.push(await generateVoiceLine("Aleks", dualScript.intro));
 
         console.log(`  → Generating ${dualScript.dialogue.length} dialogue segments...`);
         for (const [index, line] of dualScript.dialogue.entries()) {
@@ -212,7 +212,7 @@ async function generatePodcastFromMarkdown(
         }
 
         console.log("  → Generating outro...");
-        chunks.push(await generateVoiceLine("Sam", dualScript.outro));
+        chunks.push(await generateVoiceLine("Nicole", dualScript.outro));
     }
 
     // Merge buffers

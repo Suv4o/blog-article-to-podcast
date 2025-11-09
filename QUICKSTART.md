@@ -27,7 +27,7 @@ npm start -- example-article.md
 This creates:
 
 -   `podcast_script.json` - The podcast script
--   `podcast_episode.mp3` - The final podcast (single speaker: Alex)
+-   `podcast_episode.mp3` - The final podcast (single speaker: Aleks)
 
 ### 2. Run with two speakers (conversational):
 
@@ -56,10 +56,10 @@ npm start -- example-article.md my-awesome-podcast.mp3 --speakers=2
 ## Speaker Modes
 
 -   **Single Speaker (default)**: `--speakers=1` or no flag
-    -   Solo podcast with Alex (alloy voice)
+    -   Solo podcast with Aleks (alloy voice)
     -   More focused and direct delivery
 -   **Two Speakers**: `--speakers=2`
-    -   Conversational format with Alex and Sam
+    -   Conversational format with Aleks and Nicole
     -   More engaging and dynamic
     -   Great for complex topics
 
@@ -74,7 +74,7 @@ Agent 1 (Scriptwriter): Converts to single-speaker script
    ↓
 Agent 2 (Editor): Polishes and adds engagement
    ↓
-TTS: Generates audio (Alex = alloy voice)
+TTS: Generates audio (Aleks = alloy voice)
    ↓
 Output: MP3 podcast file
 ```
@@ -88,7 +88,7 @@ Agent 1 (Scriptwriter): Converts to conversation
    ↓
 Agent 2 (Editor): Polishes and adds humor
    ↓
-TTS: Generates audio (Alex = alloy voice, Sam = nova voice)
+TTS: Generates audio (Aleks = alloy voice, Nicole = nova voice)
    ↓
 Output: MP3 podcast file
 ```
@@ -125,8 +125,8 @@ Output: MP3 podcast file
 🎙️ Step 3: Generating audio...
   → Generating intro...
   → Generating 12 dialogue segments...
-    [1/12] Alex
-    [2/12] Sam
+    [1/12] Aleks
+    [2/12] Nicole
     ...
   → Generating outro...
 🎧 Podcast saved as podcast_episode.mp3

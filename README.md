@@ -6,8 +6,8 @@ Transform your technical blog articles (written in Markdown) into engaging podca
 
 -   **Multi-Agent System**: Uses AI agents (Scriptwriter and Editor) to create natural scripts
 -   **Flexible Speaker Modes**:
-    -   **Single Speaker** (default): Solo podcast with one host (Alex)
-    -   **Two Speakers**: Conversational format with Alex and Sam
+    -   **Single Speaker** (default): Solo podcast with one host (Aleks)
+    -   **Two Speakers**: Conversational format with Aleks and Nicole
 -   **Code Explanation**: Code snippets are explained conversationally, not read aloud
 -   **Emotional Expression**: Includes markers like `[laughs]`, `[excited]`, etc.
 -   **Complete Podcast**: Includes intro and outro segments
@@ -77,8 +77,8 @@ npm start -- path/to/your/article.md my-podcast.mp3 --speakers=2
 
 ### Speaker Mode Options
 
--   `--speakers=1` (default): Single speaker podcast with Alex
--   `--speakers=2`: Two-speaker conversational podcast with Alex and Sam
+-   `--speakers=1` (default): Single speaker podcast with Aleks
+-   `--speakers=2`: Two-speaker conversational podcast with Aleks and Nicole
 
 **Important:** The `--` separator is required when using `npm start` to pass arguments to the script.
 
@@ -127,8 +127,8 @@ The structure depends on the speaker mode:
 {
     "intro": "Welcome to Tech Talks...",
     "dialogue": [
-        { "speaker": "Alex", "text": "Hey everyone!" },
-        { "speaker": "Sam", "text": "Great to be here! [excited]" }
+        { "speaker": "Aleks", "text": "Hey everyone!" },
+        { "speaker": "Nicole", "text": "Great to be here! [excited]" }
     ],
     "outro": "Thanks for listening..."
 }
@@ -138,8 +138,8 @@ The structure depends on the speaker mode:
 
 A complete podcast episode with:
 
--   **Single Speaker**: Alex voiced by OpenAI's "alloy" voice
--   **Two Speakers**: Alex (alloy) and Sam (nova) voices
+-   **Single Speaker**: Aleks voiced by OpenAI's "alloy" voice
+-   **Two Speakers**: Aleks (alloy) and Nicole (nova) voices
 
 ## 🛠️ Technology Stack
 
@@ -186,7 +186,7 @@ A complete podcast episode with:
 Edit the `generateVoiceLine` function in `index.ts`:
 
 ```typescript
-const voice = speaker === "Alex" ? "alloy" : "nova";
+const voice = speaker === "Aleks" ? "alloy" : "nova";
 ```
 
 Available voices: `alloy`, `echo`, `fable`, `onyx`, `nova`, `shimmer`
@@ -207,16 +207,16 @@ Update the `PodcastScript` interface and agent instructions to use different nam
 For a blog post about Homebrew migration, the agents might create:
 
 ```
-Alex: "Hey folks! Welcome to Tech Unpacked! Today we're saving your
+Aleks: "Hey folks! Welcome to Tech Unpacked! Today we're saving your
        sanity when moving to a new Mac."
 
-Sam: "Finally! Because last time I reinstalled my dev tools one by
+Nicole: "Finally! Because last time I reinstalled my dev tools one by
       one… I nearly cried. [laughs]"
 
-Alex: "Been there! But Homebrew's got your back. Just one command,
+Aleks: "Been there! But Homebrew's got your back. Just one command,
        and poof — everything's restored."
 
-Sam: "[excited] That's genius! Then you just reinstall everything
+Nicole: "[excited] That's genius! Then you just reinstall everything
       with that file later?"
 ```
 

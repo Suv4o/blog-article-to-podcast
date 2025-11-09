@@ -10,7 +10,7 @@
 npm start -- example-article.md
 ```
 
-Creates a solo podcast with Alex as the host.
+Creates a solo podcast with Aleks as the host.
 
 ### 2. Two Speakers
 
@@ -18,7 +18,7 @@ Creates a solo podcast with Alex as the host.
 npm start -- example-article.md --speakers=2
 ```
 
-Creates a conversational podcast with Alex and Sam.
+Creates a conversational podcast with Aleks and Nicole.
 
 ## With Custom Files
 
