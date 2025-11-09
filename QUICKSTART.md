@@ -16,12 +16,12 @@
 
 ## Run Examples
 
-**Important:** You must provide a markdown file as input.
+**Important:** You must provide a markdown file as input. The `--` separator is required when using `npm start`.
 
 ### 1. Run with the included example (default: single speaker):
 
 ```bash
-npm start example-article.md
+npm start -- example-article.md
 ```
 
 This creates:
@@ -32,25 +32,25 @@ This creates:
 ### 2. Run with two speakers (conversational):
 
 ```bash
-npm start example-article.md --speakers=2
+npm start -- example-article.md --speakers=2
 ```
 
 ### 3. Run with your own blog post (single speaker):
 
 ```bash
-npm start path/to/your-article.md
+npm start -- path/to/your-article.md
 ```
 
 ### 4. Two speakers with custom article:
 
 ```bash
-npm start path/to/your-article.md --speakers=2
+npm start -- path/to/your-article.md --speakers=2
 ```
 
 ### 5. Custom output filename with two speakers:
 
 ```bash
-npm start example-article.md my-awesome-podcast.mp3 --speakers=2
+npm start -- example-article.md my-awesome-podcast.mp3 --speakers=2
 ```
 
 ## Speaker Modes

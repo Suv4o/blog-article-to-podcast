@@ -1,13 +1,13 @@
 # Usage Examples
 
-**Note:** All commands require a markdown file as input.
+**Note:** All commands require a markdown file as input. The `--` separator is required when using `npm start`.
 
 ## Basic Usage
 
 ### 1. Single Speaker (Default)
 
 ```bash
-npm start example-article.md
+npm start -- example-article.md
 ```
 
 Creates a solo podcast with Alex as the host.
@@ -15,7 +15,7 @@ Creates a solo podcast with Alex as the host.
 ### 2. Two Speakers
 
 ```bash
-npm start example-article.md --speakers=2
+npm start -- example-article.md --speakers=2
 ```
 
 Creates a conversational podcast with Alex and Sam.
@@ -25,25 +25,25 @@ Creates a conversational podcast with Alex and Sam.
 ### Single Speaker with Custom Article
 
 ```bash
-npm start my-blog-post.md
+npm start -- my-blog-post.md
 ```
 
 ### Two Speakers with Custom Article
 
 ```bash
-npm start my-blog-post.md --speakers=2
+npm start -- my-blog-post.md --speakers=2
 ```
 
 ### Custom Output Filename (Single Speaker)
 
 ```bash
-npm start my-article.md episode-01.mp3
+npm start -- my-article.md episode-01.mp3
 ```
 
 ### Custom Output Filename (Two Speakers)
 
 ```bash
-npm start my-article.md episode-01.mp3 --speakers=2
+npm start -- my-article.md episode-01.mp3 --speakers=2
 ```
 
 ## Real-World Examples
@@ -51,16 +51,16 @@ npm start my-article.md episode-01.mp3 --speakers=2
 ### Creating a Tutorial Series (Single Speaker)
 
 ```bash
-npm start tutorials/part1-intro.md tutorial-01-intro.mp3
-npm start tutorials/part2-advanced.md tutorial-02-advanced.mp3
-npm start tutorials/part3-conclusion.md tutorial-03-conclusion.mp3
+npm start -- tutorials/part1-intro.md tutorial-01-intro.mp3
+npm start -- tutorials/part2-advanced.md tutorial-02-advanced.mp3
+npm start -- tutorials/part3-conclusion.md tutorial-03-conclusion.mp3
 ```
 
 ### Creating Conversational Tech Discussions (Two Speakers)
 
 ```bash
-npm start articles/react-vs-vue.md react-vue-debate.mp3 --speakers=2
-npm start articles/ai-trends.md ai-discussion.mp3 --speakers=2
+npm start -- articles/react-vs-vue.md react-vue-debate.mp3 --speakers=2
+npm start -- articles/ai-trends.md ai-discussion.mp3 --speakers=2
 ```
 
 ## When to Use Which Mode?

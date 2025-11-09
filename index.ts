@@ -117,7 +117,7 @@ const editorDual = new Agent({
 async function generateVoiceLine(speaker: "Alex" | "Sam", text: string): Promise<Buffer> {
     const voice = speaker === "Alex" ? "alloy" : "nova"; // Different voices for each speaker
     const response = await client.audio.speech.create({
-        model: "tts-1",
+        model: "tts-1-hd",
         voice,
         input: text,
     });
@@ -234,12 +234,14 @@ async function main() {
         console.error(`❌ Please provide a markdown file as an argument.
 
 Usage:
-  npm start <markdown-file> [output-file] [--speakers=1|2]
+  npm start -- <markdown-file> [output-file] [--speakers=1|2]
 
 Examples:
-  npm start my-blog-post.md
-  npm start my-article.md episode-01.mp3
-  npm start my-article.md podcast.mp3 --speakers=2
+  npm start -- my-blog-post.md
+  npm start -- my-article.md episode-01.mp3
+  npm start -- my-article.md podcast.mp3 --speakers=2
+
+Note: The -- separator is required when using npm start to pass arguments.
 `);
         process.exit(1);
     }
@@ -251,11 +253,11 @@ Examples:
     }
 
     const markdown = fs.readFileSync(markdownFile, "utf-8");
-    const outputFile = args[1] || "podcast_episode.mp3";
 
-    // Check for --speakers flag
+    // Check for --speakers flag first
     let speakers: 1 | 2 = 1; // Default to single speaker
     const speakersFlag = args.find((arg) => arg.startsWith("--speakers="));
+
     if (speakersFlag) {
         const speakersValue = speakersFlag.split("=")[1];
         if (speakersValue === "2") {
@@ -266,6 +268,12 @@ Examples:
             console.error(`❌ Invalid --speakers value. Use --speakers=1 or --speakers=2`);
             process.exit(1);
         }
+    }
+
+    // Get output file (args[1] if it's not the speakers flag)
+    let outputFile = "podcast_episode.mp3";
+    if (args[1] && !args[1].startsWith("--speakers=")) {
+        outputFile = args[1];
     }
 
     await generatePodcastFromMarkdown(markdown, outputFile, speakers);

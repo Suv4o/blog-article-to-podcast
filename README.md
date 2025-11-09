@@ -44,12 +44,12 @@ OPENAI_API_KEY=your_api_key_here
 
 ## 🎬 Usage
 
-**Note:** You must provide a markdown file as input.
+**Note:** You must provide a markdown file as input. When using `npm start`, you need to use `--` to pass arguments.
 
 ### Basic usage (single speaker - default):
 
 ```bash
-npm start example-article.md
+npm start -- example-article.md
 ```
 
 This creates:
@@ -60,25 +60,27 @@ This creates:
 ### Run with your own article (single speaker):
 
 ```bash
-npm start path/to/your/article.md
+npm start -- path/to/your/article.md
 ```
 
 ### Two-speaker mode (conversational):
 
 ```bash
-npm start path/to/your/article.md --speakers=2
+npm start -- path/to/your/article.md --speakers=2
 ```
 
 ### Specify custom output filename:
 
 ```bash
-npm start path/to/your/article.md my-podcast.mp3 --speakers=2
+npm start -- path/to/your/article.md my-podcast.mp3 --speakers=2
 ```
 
 ### Speaker Mode Options
 
 -   `--speakers=1` (default): Single speaker podcast with Alex
 -   `--speakers=2`: Two-speaker conversational podcast with Alex and Sam
+
+**Important:** The `--` separator is required when using `npm start` to pass arguments to the script.
 
 ## 📝 Input Format
 
