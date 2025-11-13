@@ -2,6 +2,8 @@
 
 Transform your technical blog articles (written in Markdown) into engaging podcasts using AI agents and text-to-speech!
 
+> 📖 **Read the full article**: [Turning Markdown into Podcasts with OpenAI Agents](https://www.trpkovski.com/2025/11/13/turning-markdown-into-podcasts-with-openai-agents)
+
 ## 🎯 Features
 
 -   **Multi-Agent System**: Uses AI agents (Scriptwriter and Editor) to create natural scripts
