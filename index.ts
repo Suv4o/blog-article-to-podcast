@@ -220,7 +220,42 @@ async function generatePodcastFromMarkdown(
     fs.writeFileSync(outputFileName, combined);
 
     console.log(`🎧 Podcast saved as ${outputFileName}`);
+
+    // Step 4: Generate transcript with timestamps
+    console.log("📝 Step 4: Generating transcript with timestamps...");
+    await generateTranscript(outputFileName);
+
     console.log(`\n✨ Done! Your ${speakers}-speaker podcast is ready to play.`);
+}
+
+/**
+ * Generate transcript with timestamps using Whisper API
+ */
+async function generateTranscript(audioFile: string) {
+    try {
+        const transcription = await client.audio.transcriptions.create({
+            file: fs.createReadStream(audioFile),
+            model: "whisper-1",
+            response_format: "verbose_json",
+            timestamp_granularities: ["segment"],
+        });
+
+        // Format the transcript with timestamps as a simple array
+        const transcript =
+            (transcription as any).segments?.map((segment: any) => ({
+                start: segment.start,
+                end: segment.end,
+                text: segment.text.trim(),
+            })) || [];
+
+        // Save transcript as JSON array
+        const transcriptFileName = audioFile.replace(/\.mp3$/, "_transcript.json");
+        fs.writeFileSync(transcriptFileName, JSON.stringify(transcript, null, 2));
+        console.log(`📄 Transcript saved to ${transcriptFileName}`);
+    } catch (error) {
+        console.error("⚠️  Failed to generate transcript:", error instanceof Error ? error.message : error);
+        console.log("Continuing without transcript...");
+    }
 }
 
 /**
