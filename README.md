@@ -1,5 +1,7 @@
 # Blog Article to Podcast Generator
 
+![Landing Image](https://res.cloudinary.com/suv4o/image/upload/q_auto,f_auto,w_850,e_sharpen:100/v1762858276/blog/turning-markdown-into-podcasts-with-openai-agents/turning-markdown-into-podcasts-with-openai-agents_aav3tt)
+
 Transform your technical blog articles (written in Markdown) into engaging podcasts using AI agents and text-to-speech!
 
 > 📖 **Read the full article**: [Turning Markdown into Podcasts with OpenAI Agents](https://www.trpkovski.com/2025/11/13/turning-markdown-into-podcasts-with-openai-agents)
